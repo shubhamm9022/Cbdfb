@@ -4,128 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoviesVault HQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body {
-            background-color: #121212;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
-        .container {
-            width: 90%;
-            margin: auto;
-        }
-        .logo {
-            margin: 20px 0;
-            font-size: 24px;
-            font-weight: bold;
-            pointer-events: none;
-        }
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .search-bar input {
-            width: 60%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-        }
-        .search-bar button {
-            background-color: green;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin-left: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .categories {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .category {
-            background: #333;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .category:hover {
-            background: #555;
-        }
-        .movies {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-        }
-        .movie {
-            background: #222;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        .movie:hover {
-            transform: scale(1.05);
-        }
-        .movie img {
-            width: 150px;
-            height: 220px;
-            object-fit: cover;
-            pointer-events: none;
-            -webkit-user-drag: none;
-        }
-        .movie a {
-            display: block;
-            color: green;
-            text-decoration: none;
-            margin-top: 5px;
-        }
-        footer {
-            margin-top: 30px;
-            padding: 15px;
-            background: #000;
-        }
-        footer p {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        footer nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        footer nav a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
     <div class="container">
-        <img src="logo.png" alt="Movie Vault Logo" class="logo">
-        <div class="search-bar">
-            <input type="text" id="search" placeholder="Search movies..." oninput="searchMovies()">
+        <img src="logo.png" alt="Movie Vault Logo" class="logo animate__animated animate__fadeIn">
+        
+        <nav class="breadcrumb animate__animated animate__fadeIn">
+            <ul>
+                <li><a href="#" onclick="fetchMovies('all')">Home</a></li>
+                <li id="current-category">All Movies</li>
+            </ul>
+        </nav>
+        
+        <div class="search-bar animate__animated animate__fadeIn">
+            <input type="text" id="search" placeholder="Search movies...">
             <button onclick="searchMovies()">Search</button>
         </div>
-        <div class="categories">
+        
+        <div class="categories animate__animated animate__fadeIn">
             <div class="category" onclick="fetchMovies('all')">All</div>
             <div class="category" onclick="fetchMovies('Hollywood')">Hollywood</div>
             <div class="category" onclick="fetchMovies('Bollywood')">Bollywood</div>
             <div class="category" onclick="fetchMovies('South Indian Dubbed')">South Indian Dubbed</div>
         </div>
+        
         <div class="movies" id="movieList"></div>
     </div>
 
-    <footer>
+    <footer class="animate__animated animate__fadeInUp">
         <p>&copy; 2025 Movie Vault. All Rights Reserved.</p>
         <nav>
             <a href="dmca.html">DMCA</a>
@@ -134,76 +43,6 @@
         </nav>
     </footer>
 
-    <script>
-        const supabaseUrl = "https://riwgagiilkmudczczfuw.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpd2dhZ2lpbGttdWRjemN6ZnV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1NjYwODksImV4cCI6MjA1OTE0MjA4OX0.0_lciZODhjlzF_tSCLX7egMVodXhDTDU7jK6TphuQUk";
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-        async function fetchMovies(category = "all") {
-            console.log("Fetching movies for category:", category);
-
-            let query = supabase.from("movies").select("*").order("id", { ascending: false });
-
-            if (category !== "all") {
-                query = query.eq("genre", category);
-            }
-
-            const { data, error } = await query;
-
-            if (error) {
-                console.error("Error fetching movies:", error.message);
-                return;
-            }
-
-            console.log("Fetched movies:", data);
-            displayMovies(data);
-        }
-
-        function displayMovies(movies) {
-            const movieList = document.getElementById("movieList");
-            movieList.innerHTML = "";
-
-            if (movies.length === 0) {
-                movieList.innerHTML = "<p>No movies found.</p>";
-                return;
-            }
-
-            movies.forEach(movie => {
-                const movieDiv = document.createElement("div");
-                movieDiv.classList.add("movie");
-
-                movieDiv.innerHTML = `
-                    <img src="${movie.poster}" alt="${movie.title}">
-                    <h3>${movie.title} (${movie.year})</h3>
-                    <p>${movie.genre}</p>
-                    ${movie.streamLink ? `<a href="${movie.streamLink}" target="_blank">Stream</a>` : ""}
-                    ${movie.downloadLink ? `<a href="${movie.downloadLink}" target="_blank">Download</a>` : ""}
-                `;
-
-                movieList.appendChild(movieDiv);
-            });
-        }
-
-        function searchMovies() {
-            let query = document.getElementById("search").value.toLowerCase();
-            let movies = document.querySelectorAll(".movie");
-
-            movies.forEach(movie => {
-                let title = movie.querySelector("h3").textContent.toLowerCase();
-                movie.style.display = title.includes(query) ? "block" : "none";
-            });
-        }
-
-        fetchMovies();
-
-        // Disable right-click and copying
-        document.addEventListener("contextmenu", event => event.preventDefault());
-        document.addEventListener("keydown", event => {
-            if (event.ctrlKey && (event.key === "c" || event.key === "u" || event.key === "s")) {
-                event.preventDefault();
-            }
-        });
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
