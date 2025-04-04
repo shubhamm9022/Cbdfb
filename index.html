@@ -4,44 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoviesVault HQ</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="container">
-        <img src="logo.png" alt="Movie Vault Logo" class="logo animate__animated animate__fadeIn">
-        
-        <nav class="breadcrumb animate__animated animate__fadeIn">
-            <ul>
-                <li><a href="#" onclick="fetchMovies('all')">Home</a></li>
-                <li id="current-category">All Movies</li>
-            </ul>
-        </nav>
-        
-        <div class="search-bar animate__animated animate__fadeIn">
-            <input type="text" id="search" placeholder="Search movies...">
-            <button onclick="searchMovies()">Search</button>
+    <header>
+        <div class="container">
+            <h1>MoviesVault</h1>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search movies...">
+                <button id="searchBtn">Search</button>
+            </div>
         </div>
-        
-        <div class="categories animate__animated animate__fadeIn">
-            <div class="category" onclick="fetchMovies('all')">All</div>
-            <div class="category" onclick="fetchMovies('Hollywood')">Hollywood</div>
-            <div class="category" onclick="fetchMovies('Bollywood')">Bollywood</div>
-            <div class="category" onclick="fetchMovies('South Indian Dubbed')">South Indian Dubbed</div>
-        </div>
-        
-        <div class="movies" id="movieList"></div>
-    </div>
+    </header>
 
-    <footer class="animate__animated animate__fadeInUp">
-        <p>&copy; 2025 Movie Vault. All Rights Reserved.</p>
-        <nav>
-            <a href="dmca.html">DMCA</a>
-            <a href="request.html">Request</a>
-            <a href="contact.html">Contact</a>
-        </nav>
-    </footer>
+    <main class="container">
+        <div class="filter-controls">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Hollywood">Hollywood</button>
+            <button class="filter-btn" data-filter="Bollywood">Bollywood</button>
+        </div>
+
+        <div class="movies-grid" id="moviesGrid"></div>
+
+        <div class="pagination">
+            <button id="prevPage">Previous</button>
+            <span id="pageNumber">1</span>
+            <button id="nextPage">Next</button>
+        </div>
+    </main>
 
     <script src="script.js"></script>
 </body>
